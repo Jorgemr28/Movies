@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register movie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Registrar pelicula</h1>
+
+    <form method="post">
+        <div class="mb-3 mt-3">
+            <label for="nameMovie" class="form-label">Name:</label>
+            <input type="text" class="form-control" id="nameMovie" placeholder="Enter name" name="nameMovie">
+        </div>
+        <div class="mb-3 mt-3">
+            <label for="Author" class="form-label">Author:</label>
+            <input type="text" class="form-control" id="Author" placeholder="Enter author" name="Author">
+        </div>
+
+        <div class="mb-3 mt-3">
+            <label for="gender" class="form-label">Gender:</label>
+            <input type="text" class="form-control" id="gender" placeholder="Enter gender" name="gender">
+        </div>
+
+        <div class="mb-3 mt-3">
+            <label for="amount" class="form-label">Amount:</label>
+            <input type="number" class="form-control" id="amount" placeholder="Enter amount" name="amount">
+        </div>
+
+        <button type="button" class="btn btn-primary" id = "registerButton">Submit</button>
+    </form>
+
+</div>
+<script>
+
+    let registerButton = document.getElementById('registerButton');
+
+    registerButton.addEventListener("click", event =>{
+        registerStudent();
+    })
+
+    let registerStudent = async() => {
+        let movie = {
+            name: document.getElementById("nameMovie").value,
+            author: document.getElementById("Author").value,
+            gender: document.getElementById("gender").value,
+            amount: document.getElementById("amount").value,
+
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/movies/Save", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(movie)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();  // Extrae el cuerpo de la respuesta como JSON
+                console.log(`HTTP error! status: ${response.status}`);
+                // Muestra el mensaje de error específico proveniente del backend, o un mensaje genérico si no está disponible
+                alert(`Error: ${errorData.message || "Algo ha salido mal con el registro. Verifica los datos y vuelve a intentarlo."}`);
+            } else {
+                const responseData = await response.json(); // Suponiendo que el backend también responde con JSON en casos de éxito
+                alert(`Registro exitoso: ${responseData.message}`);  // Muestra un mensaje de éxito (ajustar según lo que responda tu backend)
+            }
+        } catch (error) {
+            console.error('Error during the fetch operation:', error.message);
+            alert("algo ha salido mal con el registro \nverifica los datos y vuelve a intentarlo")
+        }
+    };
+
+</script>
+</body>
+</html>
